@@ -35,7 +35,7 @@ func NewConfigDefault() *Config {
 		TlsKeyFile:              "certs/localhost.key",
 		MySqlUsername:           "root",
 		MySqlPassword:           "123456",
-		MySqlDbName:             "users",
+		MySqlDbName:             "multifinance-api",
 		MySqlAddress:            "tcp(127.0.0.1:3306)",
 		PrometheusListenAddress: "0.0.0.0:8081",
 		LoggingToStd:            true,
