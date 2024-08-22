@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql
+    container_name: mysql_local
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: multifinance-api
+      MYSQL_USER: user_local
+      MYSQL_PASSWORD: 123456
+    ports:
+      - "13306:3306"
+#     volumes:
+#       - mysql_data:/var/lib/mysql
+#     networks:
+#       - mysql_network
+
+# volumes:
+#   mysql_data:
+
+# networks:
+#   mysql_network:
