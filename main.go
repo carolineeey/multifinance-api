@@ -13,6 +13,17 @@ import (
 	"time"
 )
 
+// version variable is left empty as it is populated in compile time by the linker.
+// To populate this variable during compile time, add -X flag to the linker using -ldflags go build command:
+//
+//	go build -ldflags "-X main.version=0.1.0"
+//
+// This way, during runtime, this variable will contain a string `0.1.0`. For more information about -X flag, visit
+// Go linker documentation https://golang.org/cmd/link/.
+//
+//goland:noinspection GoUnusedGlobalVariable
+var version string
+
 var multifinanceClient *api.Client
 
 func main() {
