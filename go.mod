@@ -1,4 +1,4 @@
-module git.padmadigital.id/gve/gve-api
+module "github.com/carolineeey/multifinance-api/api"
 
 go 1.15
 
