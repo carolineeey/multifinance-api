@@ -1,4 +1,4 @@
-package api
+package main
 
 import (
 	"github.com/carolineeey/multifinance-api/api"
@@ -23,8 +23,11 @@ func createRouter(apiClient *api.Client, logWriter io.Writer) (router *mux.Route
 	apiRouter := router.PathPrefix("/api").Subrouter()
 	apiV1 := apiRouter.PathPrefix("/v1").Subrouter()
 
-	customerV1 := apiV1.PathPrefix("customers").Subrouter()
+	customerV1 := apiV1.PathPrefix("/customer").Subrouter()
 	customerV1.HandleFunc("/get", apiClient.HandleGetCustomer).Methods("GET")
+	customerV1.HandleFunc("/add", apiClient.HandleAddCustomer).Methods("POST")
+	customerV1.HandleFunc("/edit", apiClient.HandleAddCustomer).Methods("POST")
+	customerV1.HandleFunc("/delete", apiClient.HandleGetCustomer).Methods("DELETE")
 
 	return
 }

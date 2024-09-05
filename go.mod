@@ -5,15 +5,12 @@ go 1.22
 toolchain go1.22.4
 
 require (
+	github.com/go-sql-driver/mysql v1.8.1
 	github.com/gorilla/handlers v1.5.2
 	github.com/gorilla/mux v1.8.1
-	github.com/slok/go-http-metrics v0.12.0
 )
 
 require (
-	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
-	github.com/fastbill/go-httperrors v1.0.0 // indirect
+	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
-	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
-	github.com/prometheus/client_golang v1.20.1 // indirect
 )

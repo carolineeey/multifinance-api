@@ -2,7 +2,10 @@ run: build
 	@./bin/api
 
 build:
-	@go build -o bin/api
+	@echo "Executing go build"
+	go build -v -buildmode=pie -ldflags "-X main.version=0.1.0"
+	@echo "Binary ready"
+
 
 test:
 	@go test -v ./...
