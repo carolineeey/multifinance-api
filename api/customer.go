@@ -7,8 +7,31 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-// CreateUserCtx creates a new user.
-func (c *Client) CreateUserCtx(ctx context.Context, customer *SetUserRequest) (err error) {
+// GetCustomerCtx gets a customer.
+func (c *Client) GetCustomerCtx(ctx context.Context, nik int) (customer *CustomerInfo, err error) {
+	customer = &CustomerInfo{}
+	err = c.Db.QueryRowContext(
+		ctx,
+		`SELECT full_name, legal_name, birth_place, birth_date, salary, ktp_photo_id, selfie_id FROM customers WHERE nik = ?`,
+		nik,
+	).Scan(
+		&customer.FullName,
+		&customer.LegalName,
+		&customer.BirtPlace,
+		&customer.BirthDate,
+		&customer.Salary,
+		&customer.KtpPhotoId,
+		&customer.SelfieId,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get customer info: %w", err)
+	}
+
+	return customer, nil
+}
+
+// CreateCustomerCtx creates a new customer.
+func (c *Client) CreateCustomerCtx(ctx context.Context, customer *SetUserRequest) (err error) {
 	_, err = c.Db.QueryContext(
 		ctx,
 		`INSERT INTO customers(nik, full_name, legal_name, birth_place, birth_date, salary) VALUES (?,?,?,?,FROM_UNIXTIME(?),?)`,
@@ -26,8 +49,8 @@ func (c *Client) CreateUserCtx(ctx context.Context, customer *SetUserRequest) (e
 	return nil
 }
 
-// EditUserDataCtx edits the data of a user.
-func (c *Client) EditUserDataCtx(ctx context.Context, customer *SetUserRequest) (err error) {
+// EditCustomerDataCtx edits the data of a customer.
+func (c *Client) EditCustomerDataCtx(ctx context.Context, customer *SetUserRequest) (err error) {
 	_, err = c.Db.QueryContext(
 		ctx,
 		`UPDATE customers SET full_name = ?, legal_name = ?, birth_place = ?, birth_date = ?, salary = ? WHERE nik = ?`,
@@ -45,8 +68,8 @@ func (c *Client) EditUserDataCtx(ctx context.Context, customer *SetUserRequest) 
 	return nil
 }
 
-// DeleteUserCtx deletes a user.
-func (c *Client) DeleteUserCtx(ctx context.Context, nik int) (err error) {
+// DeleteCustomerCtx deletes a customer.
+func (c *Client) DeleteCustomerCtx(ctx context.Context, nik int) (err error) {
 	_, err = c.Db.QueryContext(
 		ctx,
 		`DELETE FROM customers WHERE nik = ?`,

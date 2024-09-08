@@ -26,8 +26,8 @@ func createRouter(apiClient *api.Client, logWriter io.Writer) (router *mux.Route
 	customerV1 := apiV1.PathPrefix("/customer").Subrouter()
 	customerV1.HandleFunc("/get", apiClient.HandleGetCustomer).Methods("GET")
 	customerV1.HandleFunc("/add", apiClient.HandleAddCustomer).Methods("POST")
-	customerV1.HandleFunc("/edit", apiClient.HandleAddCustomer).Methods("POST")
-	customerV1.HandleFunc("/delete", apiClient.HandleGetCustomer).Methods("DELETE")
+	customerV1.HandleFunc("/edit", apiClient.HandleEditCustomer).Methods("POST")
+	customerV1.HandleFunc("/delete", apiClient.HandleDeleteCustomer).Methods("DELETE")
 
 	return
 }

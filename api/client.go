@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"github.com/gorilla/schema"
 	"net/http"
 	"time"
 )
@@ -42,4 +43,33 @@ func (c *Client) writeErrorObject(writer http.ResponseWriter, err error, code in
 	}
 
 	_ = c.writeObject(writer, code, errResp)
+}
+
+// decodeRequestJson decodes HTTP request body as JSON to `obj` using json pkg.
+func (c *Client) decodeRequestJson(writer http.ResponseWriter, request *http.Request, obj interface{}) (err error) {
+	if request.Body == nil {
+		c.writeErrorObject(writer, err, http.StatusBadRequest, "request body is nil")
+		return
+	}
+
+	err = json.NewDecoder(request.Body).Decode(obj)
+	if err != nil {
+		c.writeErrorObject(writer, err, http.StatusInternalServerError, "failed to decode request body")
+		return
+	}
+
+	return nil
+}
+
+// decodeRequestSchema decodes HTTP request query string to `obj` using gorilla/schema pkg.
+func (c *Client) decodeRequestSchema(writer http.ResponseWriter, request *http.Request, obj interface{}) (err error) {
+	decoder := schema.NewDecoder()
+	decoder.IgnoreUnknownKeys(true)
+	err = decoder.Decode(obj, request.URL.Query())
+	if err != nil {
+		c.writeErrorObject(writer, err, http.StatusInternalServerError, "failed to parse request query parameter")
+		return err
+	}
+
+	return nil
 }

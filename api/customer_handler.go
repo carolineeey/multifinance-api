@@ -1,7 +1,6 @@
 package api
 
 import (
-	"encoding/json"
 	"net/http"
 	"time"
 )
@@ -16,8 +15,25 @@ const (
 
 // HandleGetCustomer handles getting a customer detail.
 func (c *Client) HandleGetCustomer(writer http.ResponseWriter, request *http.Request) {
-	_, cancel := c.createContextWithTimeout(TimeoutHandleGetCustomer)
+	ctx, cancel := c.createContextWithTimeout(TimeoutHandleGetCustomer)
 	defer cancel()
+
+	type payload struct {
+		Nik int `schema:"nik"`
+	}
+	p := &payload{}
+
+	if err := c.decodeRequestSchema(writer, request, p); err != nil {
+		return
+	}
+
+	customer, err := c.GetCustomerCtx(ctx, p.Nik)
+	if err != nil {
+		c.writeErrorObject(writer, err, http.StatusInternalServerError, "failed to get customer")
+		return
+	}
+
+	_ = c.writeObject(writer, http.StatusOK, customer)
 }
 
 // HandleAddCustomer handles creating a new customer.
@@ -27,12 +43,11 @@ func (c *Client) HandleAddCustomer(writer http.ResponseWriter, request *http.Req
 
 	payload := &SetUserRequest{}
 
-	if err := json.NewDecoder(request.Body).Decode(payload); err != nil {
-		c.writeErrorObject(writer, err, http.StatusInternalServerError, "failed to decode payload")
+	if err := c.decodeRequestJson(writer, request, payload); err != nil {
 		return
 	}
 
-	err := c.CreateUserCtx(ctx, payload)
+	err := c.CreateCustomerCtx(ctx, payload)
 	if err != nil {
 		c.writeErrorObject(writer, err, http.StatusInternalServerError, "failed to create user")
 		return
@@ -52,12 +67,11 @@ func (c *Client) HandleEditCustomer(writer http.ResponseWriter, request *http.Re
 
 	payload := &SetUserRequest{}
 
-	if err := json.NewDecoder(request.Body).Decode(payload); err != nil {
-		c.writeErrorObject(writer, err, http.StatusInternalServerError, "failed to decode payload")
+	if err := c.decodeRequestJson(writer, request, payload); err != nil {
 		return
 	}
 
-	err := c.EditUserDataCtx(ctx, payload)
+	err := c.EditCustomerDataCtx(ctx, payload)
 	if err != nil {
 		c.writeErrorObject(writer, err, http.StatusInternalServerError, "failed to edit user data")
 		return
@@ -80,12 +94,11 @@ func (c *Client) HandleDeleteCustomer(writer http.ResponseWriter, request *http.
 	}
 	p := &payload{}
 
-	if err := json.NewDecoder(request.Body).Decode(p); err != nil {
-		c.writeErrorObject(writer, err, http.StatusInternalServerError, "failed to decode payload")
+	if err := c.decodeRequestSchema(writer, request, p); err != nil {
 		return
 	}
 
-	err := c.DeleteUserCtx(ctx, p.Nik)
+	err := c.DeleteCustomerCtx(ctx, p.Nik)
 	if err != nil {
 		c.writeErrorObject(writer, err, http.StatusInternalServerError, "failed to delete user")
 		return
