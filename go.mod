@@ -1,13 +1,16 @@
-module "github.com/carolineeey/multifinance-api/api"
+module github.com/carolineeey/multifinance-api
 
-go 1.15
+go 1.22
+
+toolchain go1.22.4
 
 require (
-	github.com/go-resty/resty/v2 v2.14.0
+	github.com/go-sql-driver/mysql v1.8.1
 	github.com/gorilla/handlers v1.5.2
 	github.com/gorilla/mux v1.8.1
-	github.com/prometheus/client_golang v1.20.1
-	github.com/sony/gobreaker v1.0.0
-	github.com/spf13/viper v1.19.0
-	go.uber.org/zap v1.27.0
+)
+
+require (
+	filippo.io/edwards25519 v1.1.0 // indirect
+	github.com/felixge/httpsnoop v1.0.4 // indirect
 )
